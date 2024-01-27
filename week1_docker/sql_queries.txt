@@ -1,0 +1,55 @@
+1.  Count records
+How many taxi trips were totally made on September 18th 2019?
+Tip: started and finished on 2019-09-18.
+
+SELECT COUNT(1) FROM green_taxi_data
+WHERE lpep_pickup_datetime >= timestamp '2019-09-18 00:00:00'
+  and lpep_dropoff_datetime < timestamp '2019-09-19 00:00:00';   ==15612
+
+2. Largest trip for each day
+Which was the pick up day with the largest trip distance 
+Use the pick up time for your calculations.
+
+SELECT foo.PU_DAY, foo.TRIP_DIST
+FROM (SELECT date_trunc('day', lpep_pickup_datetime) AS PU_DAY,
+			MAX(trip_distance) AS TRIP_DIST
+		FROM green_taxi_data
+	    GROUP BY PU_DAY ) AS foo
+ORDER BY foo.TRIP_DIST DESC
+LIMIT 1; =="2019-09-26 00:00:00"
+
+3. Three biggest pick up Boroughs
+Consider lpep_pickup_datetime in '2019-09-18' and ignoring Borough has Unknown
+Which were the 3 pick up Boroughs that had a sum of total_amount superior to 50000?
+SELECT foo.borough, foo.total_amount FROM
+( SELECT date_trunc('day', lpep_pickup_datetime) AS PU_DAY,
+       zones."Borough" AS BOROUGH,
+	   SUM(fare_amount) AS TOTAL_AMOUNT
+	   FROM green_taxi_data AS taxi
+	   INNER JOIN zones AS zones
+	   ON zones."LocationID" = taxi."PULocationID"
+	   GROUP BY PU_DAY, BOROUGH 
+	   ) AS foo
+WHERE foo.PU_DAY = timestamp '2019-09-18 00:00:00'
+AND foo.total_amount > 50000;  =="Brooklyn" "Manhattan" "Queens"
+
+4. Largest tip
+For the passengers picked up in September 2019 in the zone name Astoria 
+which was the drop off zone that had the largest tip? 
+We want the name of the zone, not the id.
+Note: it's not a typo, it's tip , not trip
+SELECT date_trunc('day', lpep_pickup_datetime) AS PU_DAY,
+       pu_zone."Zone",
+	   do_zone."Zone" AS d_zone,
+	   tip_amount AS tip
+	   FROM green_taxi_data AS taxi
+	   INNER JOIN zones AS pu_zone
+	   ON pu_zone."LocationID" = taxi."PULocationID"
+	   INNER JOIN zones AS do_zone
+	   ON do_zone."LocationID" = taxi."DOLocationID" 
+	   WHERE pu_zone."Zone" = 'Astoria' 
+	   AND taxi."lpep_pickup_datetime" < timestamp '2019-10-01 00:00:00'
+	   AND taxi."lpep_pickup_datetime" >= timestamp '2019-09-01 00:00:00'
+	   ORDER BY taxi."tip_amount" desc
+	   LIMIT 1;  == "2019-09-08 00:00:00"	"Astoria"	"JFK Airport"	62.31
+   
