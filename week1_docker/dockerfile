@@ -9,3 +9,22 @@ COPY ingest_data.py ingest_data.py
 ENTRYPOINT [ "python", "ingest_data.py" ]
 #ENTRYPOINT [ "bash" ]
 
+#We need DF to build Custome image or make changes in image
+#FROM ubuntu:18.04 Layer 1
+#PULL ./file Layer 2
+#RUN make /file   Layer 3
+#CMD python /file/file.py Layer 4
+#ENTRYPOINT specify command with parameters
+#ADD /[source-host]/[destination-docker folder] helps in copying data into Docker Image
+#ENV value_1  provides default values for vars which can be assessed within container
+#MAINTAINER [name] author of the image
+#WORKDIR creates dir in docker container
+#EXPOSE map[8080/tpc:{}] port for app. not very clear, sample from selenium image
+#VOLUME
+
+#BASH 
+#DOCKER IMAGES all images
+#docker ps containers
+#docker build -t my_image_name .
+#docker rmi [image name] delete image
+

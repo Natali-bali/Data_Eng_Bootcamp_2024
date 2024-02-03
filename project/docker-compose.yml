@@ -1,0 +1,75 @@
+version: "3.8"
+services: 
+  pgdatabase:
+    image: postgres:13
+    container_name: stepstone_postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=89218921
+      - POSTGRES_DB=finalproject
+    volumes:
+      - "./stepstone_postgres_data:/var/lib/postgresql/data:rw"
+    ports:
+      - "5432:5432"  
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=root
+    ports:
+      - "8080:80"
+  web_scraper:
+    build: ./stepstone_scraper
+    container_name: web_scraper
+    dockerfile: Dockerfile
+    volumes:
+      - "./stepstone_scraper/:/my_code/"
+    links:
+      - postgres  
+   etl_job:
+     build: ./etl_job
+     container_name: etl_job
+     dockerfile: Dockerfile
+     volumes:
+       -"./etl_job/:/my_code/"
+     links:
+     - postgresdb 
+
+
+#  chrome:
+#    image: chrome:beta
+#    container_name: web_chrome
+#    shm_size: 2gb
+#    ports:
+#    depends_on:
+#      - selenium-hub
+#    environment:
+#      - SE_EVENT_BUS_HOST=selenium-hub
+#      - SE_EVENT_BUS_PUBLISH_PORT=4442
+#      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+
+
+
+ # postgresdb:
+#    image: postgres
+ #   ports:
+ #   - "5555:5432"
+ #   container_name: stepstone_psql
+ #   environment:
+ #   - POSTGRES_USER=postgres
+  #  - POSTGRES_PASSWORD=89218921
+ #   - POSTGRES_DB=finalproject
+#   metabase:
+#     image: metabase/metabase
+#     ports:
+#     - 3001:3000
+#     container_name: metabase
+#     links:
+#     - postgresdb
+    # environment:
+    # - MB_DB_TYPE=postgres
+    # - MB_DB_DBNAME=tweets
+    # - MB_DB_PORT=5555
+    # - MB_DB_USER=user
+    # - MB_DB_PASS=111111
+    # - MB_DB_HOST=postgresdb

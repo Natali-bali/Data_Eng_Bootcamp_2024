@@ -1,0 +1,22 @@
+FROM ubuntu:17.04
+FROM selenium/standalone-chrome
+FROM python:3.9
+WORKDIR /my_code
+COPY src/requirements.txt /my_code
+# COPY src/. /my_code
+RUN pip install --upgrade pip
+# RUN pip install
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
+CMD python src/StepStone_scraper.py
+
+
+
+#FROM python:3.9
+
+#RUN apt-get install wget
+#RUN pip install pandas sqlalchemy psycopg2 
+
+#WORKDIR /app
+#COPY ingest_data.py ingest_data.py
+
+#ENTRYPOINT [ "python", "ingest_data.py" ]
