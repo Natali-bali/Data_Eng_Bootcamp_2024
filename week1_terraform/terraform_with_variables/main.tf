@@ -13,12 +13,10 @@ provider "google" {
   region      = var.region
 }
 
-
-resource "google_storage_bucket" "demo-bucket" {
+resource "google_storage_bucket" "mage-bucket" {
   name          = var.gcs_bucket_name
   location      = var.location
   force_destroy = true
-
 
   lifecycle_rule {
     condition {
@@ -30,9 +28,7 @@ resource "google_storage_bucket" "demo-bucket" {
   }
 }
 
-
-
-resource "google_bigquery_dataset" "demo_dataset" {
+resource "google_bigquery_dataset" "mage_dataset" {
   dataset_id = var.bq_dataset_name
   location   = var.location
 }
